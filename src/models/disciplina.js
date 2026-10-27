@@ -15,6 +15,12 @@ class Disciplina extends Model {
       },
     );
   }
+  static associate(models) {
+    this.hasMany(models.conteudo, {
+      foreignKey: "disciplina_Id",
+      as: "conteudos",
+    });
+  }
 }
 
 module.exports = Disciplina;

@@ -6,6 +6,7 @@ class Conteudo extends Model {
       {
         descricao: DataTypes.STRING,
         status: DataTypes.ENUM("active", "inactive"),
+        name: DataTypes.STRING,
       },
       {
         sequelize,

@@ -14,7 +14,7 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      titulo: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
