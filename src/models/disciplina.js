@@ -17,7 +17,7 @@ class Disciplina extends Model {
   }
   static associate(models) {
     this.hasMany(models.conteudo, {
-      foreignKey: "disciplina_Id",
+      foreignKey: "disciplina_id",
       as: "conteudos",
     });
   }

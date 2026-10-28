@@ -7,7 +7,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      disciplinaId: {
+      disciplina_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: "disciplinas", key: "id" },
@@ -38,7 +38,11 @@ module.exports = {
     });
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("conteudos");
+  down: async (queryInterface) => {
+    await queryInterface.dropTable("conteudos");
+    await queryInterface.sequelize.query(
+      'DROP TYPE IF EXISTS "enum_conteudos_status";',
+    );
   },
 };
+es;

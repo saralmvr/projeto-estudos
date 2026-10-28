@@ -7,14 +7,14 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      disciplina_Id: {
+      disciplina_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: "disciplinas", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      conteudo_Id: {
+      conteudo_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: "conteudos", key: "id" },

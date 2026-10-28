@@ -21,22 +21,21 @@ module.exports = {
   // Criar um novo conteúdo
   async criar(req, res) {
     try {
-      const { titulo, descricao, dataConclusao, disciplinaId } = req.body;
+      const { titulo, descricao, disciplina_id } = req.body;
 
       if (!titulo)
         return res.status(400).json({ error: "O título é obrigatório." });
-      if (!disciplinaId)
+      if (!disciplina_id)
         return res.status(400).json({ error: "Selecione uma disciplina." });
 
-      const disciplina = await Disciplina.findByPk(disciplinaId);
+      const disciplina = await Disciplina.findByPk(disciplina_id);
       if (!disciplina)
         return res.status(404).json({ error: "Disciplina não encontrada." });
 
       const novoConteudo = await Conteudo.create({
         titulo,
         descricao,
-        dataConclusao: dataConclusao || null,
-        disciplinaId,
+        disciplina_id: disciplina_id,
       });
 
       return res.status(201).json(novoConteudo);
@@ -68,14 +67,12 @@ module.exports = {
       if (!conteudo)
         return res.status(404).json({ error: "Conteúdo não encontrado." });
 
-      const { titulo, descricao, dataConclusao, status, disciplinaId } =
-        req.body;
+      const { titulo, descricao, status, disciplina_id } = req.body;
       await conteudo.update({
         titulo,
         descricao,
-        dataConclusao,
         status,
-        disciplinaId,
+        disciplina_id,
       });
       return res.json(conteudo);
     } catch (error) {
