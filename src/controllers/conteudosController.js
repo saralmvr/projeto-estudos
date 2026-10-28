@@ -21,9 +21,9 @@ module.exports = {
   // Criar um novo conteúdo
   async criar(req, res) {
     try {
-      const { titulo, descricao, disciplina_id } = req.body;
+      const { name, descricao, disciplina_id } = req.body;
 
-      if (!titulo)
+      if (!name)
         return res.status(400).json({ error: "O título é obrigatório." });
       if (!disciplina_id)
         return res.status(400).json({ error: "Selecione uma disciplina." });
@@ -33,7 +33,7 @@ module.exports = {
         return res.status(404).json({ error: "Disciplina não encontrada." });
 
       const novoConteudo = await Conteudo.create({
-        titulo,
+        name,
         descricao,
         disciplina_id: disciplina_id,
       });
@@ -67,9 +67,9 @@ module.exports = {
       if (!conteudo)
         return res.status(404).json({ error: "Conteúdo não encontrado." });
 
-      const { titulo, descricao, status, disciplina_id } = req.body;
+      const { name, descricao, status, disciplina_id } = req.body;
       await conteudo.update({
-        titulo,
+        name,
         descricao,
         status,
         disciplina_id,

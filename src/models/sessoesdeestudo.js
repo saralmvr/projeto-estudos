@@ -17,15 +17,9 @@ class SessoesDeEstudo extends Model {
       },
     );
   }
-
   static associate(models) {
-    this.belongsTo(models.disciplina, {
-      foreignKey: "disciplina_Id",
-      as: "disciplina",
-    });
-
-    this.belongsTo(models.conteudo, {
-      foreignKey: "conteudo_Id",
+    this.belongsTo(models.Conteudo, {
+      foreignKey: "conteudo_id",
       as: "conteudo",
     });
   }

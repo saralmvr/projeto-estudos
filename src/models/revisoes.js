@@ -17,9 +17,9 @@ class Revisoes extends Model {
       },
     );
   }
-
   static associate(models) {
-    this.belongsTo(models.conteudo, {
+    // Altere para a primeira letra maiúscula (Conteudo)
+    this.belongsTo(models.Conteudo, {
       foreignKey: "conteudo_id",
       as: "conteudo",
     });
