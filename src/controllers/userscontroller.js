@@ -55,6 +55,9 @@ class UserController {
         .required("O e-mail é obrigatório."),
       password: Yup.string()
         .min(6, "A senha deve ter no mínimo 6 caracteres.")
+        .matches([/A-Z/], "Inclua uma letra maiúscula.")
+        .matches([/a-z/], "Inclua uma letra minúscula.")
+        .matches([/0-9/], "Inclua um número.")
         .required("A senha é obrigatória."),
       provider: Yup.boolean().default(false),
     });
