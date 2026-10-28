@@ -1,10 +1,22 @@
 const Sequelize = require("sequelize");
 const config = require("../config/database");
 const User = require("../models/user");
+const Disciplina = require("../models/disciplina");
+const conteudo = require("../models/conteudo");
+const resultadodossimulados = require("../models/resultadodossimulados");
+const revisoes = require("../models/revisoes");
+const sessoesdeestudo = require("../models/sessoesdeestudo");
+const tarefas = require("../models/tarefas");
 
-console.log("User    :", typeof User, User && typeof User.init);
-
-const models = [User];
+const models = [
+  User,
+  Disciplina,
+  conteudo,
+  resultadodossimulados,
+  revisoes,
+  sessoesdeestudo,
+  tarefas,
+];
 
 class Database {
   constructor() {

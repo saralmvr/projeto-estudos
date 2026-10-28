@@ -6,7 +6,9 @@ class DisciplinaController {
       const disciplinas = await Disciplina.findAll();
       return res.json(disciplinas);
     } catch (error) {
-      return res.status(500).json({ error: "Erro ao buscar disciplinas.", details: error.message });
+      return res
+        .status(500)
+        .json({ error: "Erro ao buscar disciplinas.", details: error.message });
     }
   }
 
@@ -20,7 +22,9 @@ class DisciplinaController {
 
       return res.json(disciplina);
     } catch (error) {
-      return res.status(500).json({ error: "Erro ao buscar disciplina.", details: error.message });
+      return res
+        .status(500)
+        .json({ error: "Erro ao buscar disciplina.", details: error.message });
     }
   }
 
@@ -30,17 +34,21 @@ class DisciplinaController {
 
       // Validação básica para garantir que o nome foi enviado
       if (!name) {
-        return res.status(400).json({ error: "O nome da disciplina é obrigatório." });
+        return res
+          .status(400)
+          .json({ error: "O nome da disciplina é obrigatório." });
       }
 
       // Verifica se já existe uma disciplina cadastrada com o mesmo nome
-      const disciplinaExists = await Disciplina.findOne({ where: { nome } });
+      const disciplinaExists = await Disciplina.findOne({ where: { name } });
 
       if (disciplinaExists) {
-        return res.status(400).json({ error: "Esta disciplina já está cadastrada." });
+        return res
+          .status(400)
+          .json({ error: "Esta disciplina já está cadastrada." });
       }
 
-      const disciplina = await Disciplina.create({ nome, descricao });
+      const disciplina = await Disciplina.create({ name, descricao });
       return res.status(201).json(disciplina);
     } catch (error) {
       return res
@@ -63,7 +71,9 @@ class DisciplinaController {
       if (name && name !== disciplina.name) {
         const disciplinaExists = await Disciplina.findOne({ where: { name } });
         if (disciplinaExists) {
-          return res.status(400).json({ error: "Já existe outra disciplina com este nome." });
+          return res
+            .status(400)
+            .json({ error: "Já existe outra disciplina com este nome." });
         }
       }
 
@@ -71,7 +81,10 @@ class DisciplinaController {
 
       return res.json(disciplina);
     } catch (error) {
-      return res.status(500).json({ error: "Erro ao atualizar disciplina.", details: error.message });
+      return res.status(500).json({
+        error: "Erro ao atualizar disciplina.",
+        details: error.message,
+      });
     }
   }
 
@@ -87,7 +100,9 @@ class DisciplinaController {
 
       return res.status(204).send();
     } catch (error) {
-      return res.status(500).json({ error: "Erro ao deletar disciplina.", details: error.message });
+      return res
+        .status(500)
+        .json({ error: "Erro ao deletar disciplina.", details: error.message });
     }
   }
 }

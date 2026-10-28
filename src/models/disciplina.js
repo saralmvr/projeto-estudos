@@ -4,8 +4,8 @@ class Disciplina extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: DataTypes.STRING,
-        descricao: DataTypes.STRING,
+        name: { type: DataTypes.STRING, allowNull: false },
+        descricao: { type: DataTypes.STRING, allowNull: true },
       },
       {
         sequelize,
@@ -14,6 +14,12 @@ class Disciplina extends Model {
         underscored: true,
       },
     );
+  }
+  static associate(models) {
+    this.hasMany(models.conteudo, {
+      foreignKey: "disciplina_id",
+      as: "conteudos",
+    });
   }
 }
 
