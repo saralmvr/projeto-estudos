@@ -14,7 +14,7 @@ const publicFields = [
   "updated_at",
 ];
 
-// função auxiliar, formata o ID e retorna apenas os campos públicos (excluindo a senha) 
+// função auxiliar, formata o ID e retorna apenas os campos públicos (excluindo a senha)
 const formatUserResponse = (user) => {
   const json = user.toJSON ? user.toJSON() : user;
   return {
@@ -53,12 +53,7 @@ class UserController {
         .trim()
         .email("E-mail inválido.")
         .required("O e-mail é obrigatório."),
-      password: Yup.string()
-        .min(6, "A senha deve ter no mínimo 6 caracteres.")
-        .matches([/A-Z/], "Inclua uma letra maiúscula.")
-        .matches([/a-z/], "Inclua uma letra minúscula.")
-        .matches([/0-9/], "Inclua um número.")
-        .required("A senha é obrigatória."),
+      password: Yup.string(),
       provider: Yup.boolean().default(false),
     });
 
@@ -77,7 +72,7 @@ class UserController {
     }
 
     try {
-      const user = await  User.create(req.body);
+      const user = await User.create(req.body);
       return res.status(201).json(formatUserResponse(user));
     } catch (error) {
       return res
@@ -85,17 +80,21 @@ class UserController {
         .json({ error: "Erro ao criar usuário.", details: error.message });
     }
   }
-// método de login para a autenticação via jwt
+  // método de login para a autenticação via jwt
   async login(req, res) {
     const schema = Yup.object().shape({
-      email: Yup.string().email("E-mail inválido.").required("O e-mail é obrigatório."),
+      email: Yup.string()
+        .email("E-mail inválido.")
+        .required("O e-mail é obrigatório."),
       password: Yup.string().required("A senha é obrigatória."),
     });
 
     try {
       await schema.validate(req.body, { abortEarly: false });
     } catch (err) {
-      return res.status(400).json({ error: "Falha na validação.", messages: err.errors });
+      return res
+        .status(400)
+        .json({ error: "Falha na validação.", messages: err.errors });
     }
 
     const { email, password } = req.body;
