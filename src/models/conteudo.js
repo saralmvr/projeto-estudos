@@ -4,9 +4,18 @@ class Conteudo extends Model {
   static init(sequelize) {
     super.init(
       {
-        descricao: DataTypes.STRING,
-        status: DataTypes.ENUM("active", "inactive"),
-        name: DataTypes.STRING,
+        disciplinaId: {
+          type: DataTypes.INTEGER,
+          field: "disciplina_id",
+          allowNull: false,
+        },
+        name: { type: DataTypes.STRING, allowNull: false },
+        descricao: { type: DataTypes.TEXT, allowNull: true },
+        dataConclusao: { type: DataTypes.DATEONLY, field: "data_conclusao" },
+        status: {
+          type: DataTypes.ENUM("ativo", "inativo"),
+          defaultValue: "ativo",
+        },
       },
       {
         sequelize,

@@ -4,8 +4,8 @@ class Disciplina extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: DataTypes.STRING,
-        descricao: DataTypes.STRING,
+        name: { type: DataTypes.STRING, allowNull: false },
+        descricao: { type: DataTypes.STRING, allowNull: true },
       },
       {
         sequelize,
