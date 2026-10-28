@@ -16,7 +16,8 @@ class Disciplina extends Model {
     );
   }
   static associate(models) {
-    this.hasMany(models.conteudo, {
+    // Passando o nome do modelo diretamente por string
+    this.hasMany(models["Conteudo"] || models["conteudo"], {
       foreignKey: "disciplina_id",
       as: "conteudos",
     });

@@ -4,7 +4,7 @@ class Tarefa extends Model {
   static init(sequelize) {
     super.init(
       {
-        titulo: DataTypes.STRING,
+        name: DataTypes.STRING,
         descricao: DataTypes.STRING,
         prazo: DataTypes.DATE,
         status: DataTypes.ENUM("active", "inactive"),
@@ -20,13 +20,14 @@ class Tarefa extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.disciplina, {
+    // Altere para a primeira letra maiúscula (User e/ou Disciplina)
+    this.belongsTo(models.User, {
+      foreignKey: "user_id",
+      as: "user",
+    });
+    this.belongsTo(models.Disciplina, {
       foreignKey: "disciplina_id",
       as: "disciplina",
-    });
-    this.belongsTo(models.conteudo, {
-      foreignKey: "conteudo_id",
-      as: "conteudo",
     });
   }
 }

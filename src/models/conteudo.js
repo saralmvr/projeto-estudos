@@ -25,9 +25,9 @@ class Conteudo extends Model {
     );
   }
   static associate(models) {
-    this.belongsTo(models.disciplina, {
-      foreignKey: "disciplina_Id",
-      as: "disciplinas",
+    this.belongsTo(models.Disciplina, {
+      foreignKey: "disciplina_id",
+      as: "disciplina",
     });
   }
 }
