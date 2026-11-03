@@ -5,17 +5,15 @@ function authMiddleware(req, res, next) {
   const authorization = req.get("authorization");
 
   // Verifica se o cabeçalho contém um Bearer token.
-  const match = authorization
-    ? authorization.match(/^Bearer\s+(\S+)$/i)
-    : null;
+  const match = authorization ? authorization.match(/^Bearer\s+(\S+)$/i) : null;
 
   if (!match) {
     return res.status(401).json({
       success: false,
       error: {
         code: "TOKEN_MISSING",
-        message: "Token de autenticação não informado."
-      }
+        message: "Token de autenticação não informado.",
+      },
     });
   }
 
@@ -24,28 +22,26 @@ function authMiddleware(req, res, next) {
   try {
     // Verifica a assinatura e a validade do JWT.
     const payload = jwt.verify(token, JWT_SECRET, {
-      algorithms: ["HS256"]
+      algorithms: ["HS256"],
     });
 
     // O login do projeto gera o token com { id: user.id }.
-    if (
-      !payload ||
-      typeof payload !== "object" ||
-      payload.id == null
-    ) {
+    if (!payload || typeof payload !== "object" || payload.id == null) {
       return res.status(401).json({
         success: false,
         error: {
           code: "INVALID_TOKEN",
-          message: "Token inválido."
-        }
+          message: "Token inválido.",
+        },
       });
     }
 
     // Disponibiliza a identidade verificada para a próxima etapa.
     req.user = {
-      id: payload.id
+      id: payload.id,
     };
+
+    req.userId = payload.id;
 
     return next();
   } catch (err) {
@@ -62,8 +58,8 @@ function authMiddleware(req, res, next) {
           code: expirado ? "TOKEN_EXPIRED" : "INVALID_TOKEN",
           message: expirado
             ? "O token expirou. Faça login novamente."
-            : "Token inválido."
-        }
+            : "Token inválido.",
+        },
       });
     }
 
