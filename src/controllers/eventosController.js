@@ -1,10 +1,10 @@
-const evento = require("../models/evento");
+const Evento = require("../models/evento");
 
 module.exports = {
   // LISTAR EVENTOS
   async index(req, res) {
     try {
-      const eventos = await evento.findAll({
+      const eventos = await Evento.findAll({
         where: {
           userId: req.userId,
         },
@@ -37,14 +37,14 @@ module.exports = {
         });
       }
 
-      const evento = await evento.create({
+      const novoEvento = await Evento.create({
         title,
         start,
         allDay: allDay ?? false,
         userId: req.userId,
       });
 
-      return res.status(201).json(evento);
+      return res.status(201).json(novoEvento);
     } catch (error) {
       return res.status(500).json({
         message: "Erro ao criar evento.",
@@ -59,14 +59,14 @@ module.exports = {
       const { id } = req.params;
       const { title, start, allDay } = req.body;
 
-      const evento = await evento.findOne({
+      const eventoEncontrado = await Evento.findOne({
         where: {
           id,
           userId: req.userId,
         },
       });
 
-      if (!evento) {
+      if (!eventoEncontrado) {
         return res.status(404).json({
           message: "Evento não encontrado.",
         });
@@ -79,7 +79,7 @@ module.exports = {
           });
         }
 
-        evento.title = title;
+        eventoEncontrado.title = title;
       }
 
       if (start !== undefined) {
@@ -89,7 +89,7 @@ module.exports = {
           });
         }
 
-        evento.start = start;
+        eventoEncontrado.start = start;
       }
 
       if (allDay !== undefined) {
@@ -99,12 +99,12 @@ module.exports = {
           });
         }
 
-        evento.allDay = allDay;
+        eventoEncontrado.allDay = allDay;
       }
 
-      await evento.save();
+      await eventoEncontrado.save();
 
-      return res.status(200).json(evento);
+      return res.status(200).json(eventoEncontrado);
     } catch (error) {
       return res.status(500).json({
         message: "Erro ao atualizar evento.",
@@ -118,20 +118,20 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const evento = await evento.findOne({
+      const eventoEncontrado = await Evento.findOne({
         where: {
           id,
           userId: req.userId,
         },
       });
 
-      if (!evento) {
+      if (!eventoEncontrado) {
         return res.status(404).json({
           message: "Evento não encontrado.",
         });
       }
 
-      await evento.destroy();
+      await eventoEncontrado.destroy();
 
       return res.status(200).json({
         message: "Evento excluído com sucesso.",
