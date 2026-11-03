@@ -6,7 +6,7 @@ function errorHandler(err, req, res, next) {
   console.error(err);
 
   const statusInformado = err.statusCode || err.status;
-
+// Verifica se o status é um número entre 400 e 599, caso contrário, define como 500
   const status =
     Number.isInteger(statusInformado) &&
     statusInformado >= 400 &&
@@ -15,7 +15,7 @@ function errorHandler(err, req, res, next) {
       : 500;
 
   const producao = process.env.NODE_ENV === "production";
-
+// Retorna uma mensagem json com o erro apropriado
   return res.status(status).json({
     success: false,
     error: {
