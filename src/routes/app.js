@@ -7,12 +7,15 @@ const conteudoRoutes = require("./conteudoRoutes");
 const tarefasRoutes = require("./tarefasRoutes");
 const revisoesRoutes = require("./revisoesRoutes");
 const sessoesRoutes = require("./sessoesDeEstudoRoutes");
+const preferenciasRoutes = require("./preferenciasRoutes");
 const usersRoutes = require("./userRoutes");
+const eventosRoutes = require("./eventosRoutes");
 
 const routes = Router();
 
+routes.use(eventosRoutes);
 routes.use(usersRoutes);
-
+routes.use(preferenciasRoutes);
 routes.use(authMiddleware);
 routes.use(disciplinaRoutes);
 routes.use(conteudoRoutes);

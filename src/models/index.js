@@ -6,8 +6,19 @@ const conteudo = require("../models/conteudo");
 const revisoes = require("../models/revisoes");
 const sessoesdeestudo = require("../models/sessoesdeestudo");
 const tarefas = require("../models/tarefas");
+const Preferencia = require("./preferencia");
+const evento = require("./evento");
 
-const models = [User, Disciplina, conteudo, revisoes, sessoesdeestudo, tarefas];
+const models = [
+  User,
+  Disciplina,
+  conteudo,
+  revisoes,
+  sessoesdeestudo,
+  tarefas,
+  Preferencia,
+  evento,
+];
 
 class Database {
   constructor() {
