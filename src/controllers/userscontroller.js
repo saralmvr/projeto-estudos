@@ -53,12 +53,20 @@ class UserController {
         .trim()
         .email("E-mail inválido.")
         .required("O e-mail é obrigatório."),
-      password: Yup.string(),
+      password: Yup.string()
+      .required("A senha é obrigatória.")
+      .min(8, "A senha deve ter no mínimo 8 caracteres.")
+      .matches(/[A-Z]/, "A senha deve conter uma letra maiúscula.")
+      .matches(/[a-z]/, "A senha deve conter uma letra minúscula.")
+      .matches(/[0-9]/, "A senha deve conter um número."),
       provider: Yup.boolean().default(false),
     });
 
     try {
-      await schema.validate(req.body, { abortEarly: false });
+    await schema.validate(req.body, {
+    abortEarly: false,
+    stripUnknown: true,
+    });
     } catch (err) {
       return res
         .status(400)
