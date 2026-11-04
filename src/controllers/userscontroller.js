@@ -58,7 +58,10 @@ class UserController {
     });
 
     try {
-      await schema.validate(req.body, { abortEarly: false });
+    await schema.validate(req.body, {
+    abortEarly: false,
+    stripUnknown: true,
+    });
     } catch (err) {
       return res
         .status(400)
