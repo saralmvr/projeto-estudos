@@ -10,9 +10,11 @@ const sessoesRoutes = require("./sessoesDeEstudoRoutes");
 const preferenciasRoutes = require("./preferenciasRoutes");
 const usersRoutes = require("./userRoutes");
 const eventosRoutes = require("./eventosRoutes");
+const timerRoutes = require("./timerRoutes");
 
 const routes = Router();
 
+routes.use(timerRoutes);
 routes.use(eventosRoutes);
 routes.use(usersRoutes);
 routes.use(preferenciasRoutes);

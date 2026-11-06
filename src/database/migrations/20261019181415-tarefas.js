@@ -9,14 +9,14 @@ module.exports = {
       },
       disciplina_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: { model: "disciplinas", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       conteudo_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: { model: "conteudos", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
@@ -31,7 +31,7 @@ module.exports = {
       },
       prazo: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       status: {
         type: Sequelize.ENUM("active", "inactive"),
@@ -40,7 +40,7 @@ module.exports = {
       },
       prioridade: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -52,7 +52,10 @@ module.exports = {
       },
     });
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("tarefas");
+  down: async (queryInterface) => {
+    await queryInterface.dropTable("tarefas");
+    await queryInterface.sequelize.query(
+      'DROP TYPE IF EXISTS "enum_tarefas_status";',
+    );
   },
 };
