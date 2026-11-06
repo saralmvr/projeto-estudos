@@ -4,6 +4,40 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = require("../config/jwt");
 
+const { enviarEmailRecuperacao } = require('../config/mailer');
+const crypto = require('crypto');
+
+module.exports = {
+    async esqueciSenha(req, res) {
+        try {
+            const { email } = req.body;
+
+            const user = await User.findOne({ where: { email } });
+            if (!user) {
+                return res.status(404).json({ error: 'Usuário não encontrado.' });
+            }
+
+            // Gerar token seguro
+            const token = crypto.randomBytes(20).toString('hex');
+            const expiracao = new Date();
+            expiracao.setHours(expiracao.getHours() + 1); // Token expira em 1 hora
+
+            // Salvar token e expiração no banco de dados
+            user.resetPasswordToken = token;
+            user.resetPasswordExpires = expiracao;
+            await user.save();
+
+            // Enviar o e-mail
+            await enviarEmailRecuperacao(user.email, token);
+
+            return res.json({ message: 'E-mail de recuperação enviado com sucesso!' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Erro interno ao processar recuperação de senha.' });
+        }
+    }
+};
+
 // campos publicos
 const publicFields = [
   "id",
