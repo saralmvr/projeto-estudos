@@ -10,6 +10,9 @@ class User extends Model {
         provider: DataTypes.BOOLEAN,
         password_hash: DataTypes.STRING,
         password: DataTypes.VIRTUAL,
+        // Novos campos para recuperação de senha
+        reset_password_token: DataTypes.STRING,
+        reset_password_expires: DataTypes.DATE,
       },
       {
         sequelize,
