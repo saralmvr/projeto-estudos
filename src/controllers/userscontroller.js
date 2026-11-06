@@ -48,25 +48,25 @@ class UserController {
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      name: Yup.string().trim().required("O nome é obrigatório."),
+      name: Yup.string().trim(),
       email: Yup.string()
         .trim()
         .email("E-mail inválido.")
         .required("O e-mail é obrigatório."),
       password: Yup.string()
-      .required("A senha é obrigatória.")
-      .min(8, "A senha deve ter pelo menos 8 caracteres.")
-      .matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula.")
-      .matches(/[a-z]/, "A senha deve conter pelo menos uma letra minúscula.")
-      .matches(/[0-9]/, "A senha deve conter pelo menos um número."),
+        .required("A senha é obrigatória.")
+        .min(6, "A senha deve ter pelo menos 6 caracteres.")
+        .matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula.")
+        .matches(/[a-z]/, "A senha deve conter pelo menos uma letra minúscula.")
+        .matches(/[0-9]/, "A senha deve conter pelo menos um número."),
       provider: Yup.boolean().default(false),
     });
 
     try {
-    await schema.validate(req.body, {
-    abortEarly: false,
-    stripUnknown: true,
-    });
+      await schema.validate(req.body, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
     } catch (err) {
       return res
         .status(400)
