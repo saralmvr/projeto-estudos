@@ -1,4 +1,5 @@
 const Yup = require("yup");
+const { Op } = require("sequelize");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
@@ -48,68 +49,98 @@ class UserController {
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      name: Yup.string().trim(),
+      name: Yup.string().trim().required("O nome é obrigatório."),
+
       email: Yup.string()
         .trim()
         .email("E-mail inválido.")
         .required("O e-mail é obrigatório."),
+
       password: Yup.string()
         .required("A senha é obrigatória.")
         .min(6, "A senha deve ter pelo menos 6 caracteres.")
         .matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula.")
         .matches(/[a-z]/, "A senha deve conter pelo menos uma letra minúscula.")
         .matches(/[0-9]/, "A senha deve conter pelo menos um número."),
+
       provider: Yup.boolean().default(false),
     });
 
+    let validatedData;
+
     try {
-      await schema.validate(req.body, {
+      validatedData = await schema.validate(req.body, {
         abortEarly: false,
         stripUnknown: true,
       });
     } catch (err) {
-      return res
-        .status(400)
-        .json({ error: "Falha na validação.", messages: err.errors });
+      return res.status(400).json({
+        error: "Falha na validação.",
+        messages: err.errors,
+      });
     }
 
-    const userExists = await User.findOne({ where: { email: req.body.email } });
+    // Verifica se o nome ou e-mail já existem
+    const userExists = await User.findOne({
+      where: {
+        [Op.or]: [{ name: validatedData.name }, { email: validatedData.email }],
+      },
+    });
 
     if (userExists) {
-      return res.status(400).json({ error: "E-mail já cadastrado." });
+      if (userExists.email === validatedData.email) {
+        return res.status(400).json({
+          error: "E-mail já cadastrado.",
+        });
+      }
+
+      if (userExists.name === validatedData.name) {
+        return res.status(400).json({
+          error: "Nome já cadastrado.",
+        });
+      }
     }
 
     try {
-      const user = await User.create(req.body);
+      const user = await User.create(validatedData);
+
       return res.status(201).json(formatUserResponse(user));
     } catch (error) {
-      return res
-        .status(500)
-        .json({ error: "Erro ao criar usuário.", details: error.message });
+      return res.status(500).json({
+        error: "Erro ao criar usuário.",
+        details: error.message,
+      });
     }
   }
   // método de login para a autenticação via jwt
   async login(req, res) {
     const schema = Yup.object().shape({
-      email: Yup.string()
-        .email("E-mail inválido.")
-        .required("O e-mail é obrigatório."),
+      login: Yup.string().trim().required("Informe seu nome ou e-mail."),
+
       password: Yup.string().required("A senha é obrigatória."),
     });
 
     try {
       await schema.validate(req.body, { abortEarly: false });
     } catch (err) {
-      return res
-        .status(400)
-        .json({ error: "Falha na validação.", messages: err.errors });
+      return res.status(400).json({
+        error: "Falha na validação.",
+        messages: err.errors,
+      });
     }
 
-    const { email, password } = req.body;
+    const { login, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [{ email: login }, { name: login }],
+      },
+    });
+
     if (!user || !(await user.checkPassword(password))) {
-      return res.status(401).json({ error: "E-mail ou senha inválidos." });
+      return res.status(401).json({
+        error: "Nome, e-mail ou senha inválidos.",
+      });
     }
 
     const token = jwt.sign({ id: user.id }, JWT_SECRET, {
@@ -121,7 +152,6 @@ class UserController {
       token,
     });
   }
-
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().trim(),
@@ -155,12 +185,27 @@ class UserController {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    const { email, oldPassword } = req.body;
+    const { name, email, oldPassword } = req.body;
 
-    if (email && email !== user.email) {
-      const emailInUse = await User.findOne({ where: { email } });
-      if (emailInUse) {
+    const userExists = await User.findOne({
+      where: {
+        [Op.or]: [
+          ...(name && name !== user.name ? [{ name }] : []),
+          ...(email && email !== user.email ? [{ email }] : []),
+        ],
+        id: {
+          [Op.ne]: user.id,
+        },
+      },
+    });
+
+    if (userExists) {
+      if (userExists.email === email) {
         return res.status(400).json({ error: "E-mail já cadastrado." });
+      }
+
+      if (userExists.name === name) {
+        return res.status(400).json({ error: "Nome já cadastrado." });
       }
     }
 
