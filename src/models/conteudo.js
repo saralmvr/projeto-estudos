@@ -6,11 +6,16 @@ class Conteudo extends Model {
       {
         disciplina_id: {
           type: DataTypes.INTEGER,
-          field: "disciplina_id",
           allowNull: false,
         },
-        name: { type: DataTypes.STRING, allowNull: false },
-        descricao: { type: DataTypes.TEXT, allowNull: true },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        descricao: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
         status: {
           type: DataTypes.ENUM("ativo", "inativo"),
           defaultValue: "ativo",
@@ -23,7 +28,10 @@ class Conteudo extends Model {
         underscored: true,
       },
     );
+
+    return this;
   }
+
   static associate(models) {
     this.belongsTo(models.Disciplina, {
       foreignKey: "disciplina_id",

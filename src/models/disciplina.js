@@ -4,8 +4,14 @@ class Disciplina extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: { type: DataTypes.STRING, allowNull: false },
-        descricao: { type: DataTypes.STRING, allowNull: true },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        descricao: {
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
       },
       {
         sequelize,
@@ -14,10 +20,12 @@ class Disciplina extends Model {
         underscored: true,
       },
     );
+
+    return this;
   }
+
   static associate(models) {
-    // Passando o nome do modelo diretamente por string
-    this.hasMany(models["Conteudo"] || models["conteudo"], {
+    this.hasMany(models.Conteudo, {
       foreignKey: "disciplina_id",
       as: "conteudos",
     });
