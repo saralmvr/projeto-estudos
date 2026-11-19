@@ -1,4 +1,3 @@
-// src/database/migrations/20261103120000-preferencias.js
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable("preferencias", {
