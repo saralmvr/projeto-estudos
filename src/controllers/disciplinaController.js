@@ -1,30 +1,43 @@
-const Disciplina = require("../models/disciplina"); // Certifique-se de criar o model correspondente
+const { Op } = require("sequelize");
+const Disciplina = require("../models/disciplina");
 
 class DisciplinaController {
   async index(req, res) {
     try {
-      const disciplinas = await Disciplina.findAll();
+      const disciplinas = await Disciplina.findAll({
+        where: { user_id: req.userId },
+      });
+
       return res.json(disciplinas);
     } catch (error) {
-      return res
-        .status(500)
-        .json({ error: "Erro ao buscar disciplinas.", details: error.message });
+      return res.status(500).json({
+        error: "Erro ao buscar disciplinas.",
+        details: error.message,
+      });
     }
   }
 
   async show(req, res) {
     try {
-      const disciplina = await Disciplina.findByPk(req.params.id);
+      const disciplina = await Disciplina.findOne({
+        where: {
+          id: req.params.id,
+          user_id: req.userId,
+        },
+      });
 
       if (!disciplina) {
-        return res.status(404).json({ error: "Disciplina não encontrada." });
+        return res.status(404).json({
+          error: "Disciplina não encontrada.",
+        });
       }
 
       return res.json(disciplina);
     } catch (error) {
-      return res
-        .status(500)
-        .json({ error: "Erro ao buscar disciplina.", details: error.message });
+      return res.status(500).json({
+        error: "Erro ao buscar disciplina.",
+        details: error.message,
+      });
     }
   }
 
@@ -32,52 +45,83 @@ class DisciplinaController {
     try {
       const { name, descricao } = req.body;
 
-      // Validação básica para garantir que o nome foi enviado
-      if (!name) {
-        return res
-          .status(400)
-          .json({ error: "O nome da disciplina é obrigatório." });
+      if (!name || !name.trim()) {
+        return res.status(400).json({
+          error: "O nome da disciplina é obrigatório.",
+        });
       }
 
-      // Verifica se já existe uma disciplina cadastrada com o mesmo nome
-      const disciplinaExists = await Disciplina.findOne({ where: { name } });
+      const disciplinaExists = await Disciplina.findOne({
+        where: {
+          name: name.trim(),
+          user_id: req.userId,
+        },
+      });
 
       if (disciplinaExists) {
-        return res
-          .status(400)
-          .json({ error: "Esta disciplina já está cadastrada." });
+        return res.status(400).json({
+          error: "Esta disciplina já está cadastrada.",
+        });
       }
 
-      const disciplina = await Disciplina.create({ name, descricao });
+      const disciplina = await Disciplina.create({
+        name: name.trim(),
+        descricao,
+        user_id: req.userId,
+      });
+
       return res.status(201).json(disciplina);
     } catch (error) {
-      return res
-        .status(500)
-        .json({ error: "Erro ao criar disciplina.", details: error.message });
+      return res.status(500).json({
+        error: "Erro ao criar disciplina.",
+        details: error.message,
+      });
     }
   }
 
   async update(req, res) {
     try {
-      const disciplina = await Disciplina.findByPk(req.params.id);
+      const disciplina = await Disciplina.findOne({
+        where: {
+          id: req.params.id,
+          user_id: req.userId,
+        },
+      });
 
       if (!disciplina) {
-        return res.status(404).json({ error: "Disciplina não encontrada." });
+        return res.status(404).json({
+          error: "Disciplina não encontrada.",
+        });
       }
 
       const { name, descricao } = req.body;
 
-      // Se o nome for alterado, verifica se já não existe outra disciplina com esse novo nome
-      if (name && name !== disciplina.name) {
-        const disciplinaExists = await Disciplina.findOne({ where: { name } });
+      if (name !== undefined && !name.trim()) {
+        return res.status(400).json({
+          error: "O nome da disciplina não pode ficar vazio.",
+        });
+      }
+
+      if (name !== undefined && name.trim() !== disciplina.name) {
+        const disciplinaExists = await Disciplina.findOne({
+          where: {
+            name: name.trim(),
+            user_id: req.userId,
+            id: { [Op.ne]: disciplina.id },
+          },
+        });
+
         if (disciplinaExists) {
-          return res
-            .status(400)
-            .json({ error: "Já existe outra disciplina com este nome." });
+          return res.status(400).json({
+            error: "Já existe outra disciplina com este nome.",
+          });
         }
       }
 
-      await disciplina.update({ name, descricao });
+      await disciplina.update({
+        ...(name !== undefined && { name: name.trim() }),
+        ...(descricao !== undefined && { descricao }),
+      });
 
       return res.json(disciplina);
     } catch (error) {
@@ -90,19 +134,27 @@ class DisciplinaController {
 
   async delete(req, res) {
     try {
-      const disciplina = await Disciplina.findByPk(req.params.id);
+      const disciplina = await Disciplina.findOne({
+        where: {
+          id: req.params.id,
+          user_id: req.userId,
+        },
+      });
 
       if (!disciplina) {
-        return res.status(404).json({ error: "Disciplina não encontrada." });
+        return res.status(404).json({
+          error: "Disciplina não encontrada.",
+        });
       }
 
       await disciplina.destroy();
 
       return res.status(204).send();
     } catch (error) {
-      return res
-        .status(500)
-        .json({ error: "Erro ao deletar disciplina.", details: error.message });
+      return res.status(500).json({
+        error: "Erro ao deletar disciplina.",
+        details: error.message,
+      });
     }
   }
 }

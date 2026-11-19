@@ -9,10 +9,10 @@ module.exports = {
       },
       disciplina_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: { model: "disciplinas", key: "id" },
         onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        onDelete: "SET NULL",
       },
       name: {
         type: Sequelize.STRING,
@@ -45,4 +45,3 @@ module.exports = {
     );
   },
 };
-es;

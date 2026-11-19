@@ -8,9 +8,19 @@ class Disciplina extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
+
         descricao: {
           type: DataTypes.STRING,
           allowNull: true,
+        },
+
+        user_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "users",
+            key: "id",
+          },
         },
       },
       {
@@ -25,6 +35,11 @@ class Disciplina extends Model {
   }
 
   static associate(models) {
+    this.belongsTo(models.User, {
+      foreignKey: "user_id",
+      as: "usuario",
+    });
+
     this.hasMany(models.Conteudo, {
       foreignKey: "disciplina_id",
       as: "conteudos",
